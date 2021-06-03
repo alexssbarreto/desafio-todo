@@ -20,7 +20,7 @@ import { Error404Compoennt } from './core/component/error-404/error-404.componen
     HttpClientModule,
     RouterModule.forRoot([
       {
-        path: '', redirectTo: 'todo', pathMatch: 'full'
+        path: '', redirectTo: 'tasks', pathMatch: 'full'
       }, {
         path: '**', component: Error404Compoennt
       }
