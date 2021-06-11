@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Validators\TodoValidator;
-use App\Repository\ToDoRepository;
+use App\Service\ToDoService;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
 
-    private $repository;
+    private $service;
 
     protected $validator = TodoValidator::class;
 
-    public function __construct(ToDoRepository $repository)
+    public function __construct(ToDoService $service)
     {
-        $this->repository = $repository;
+        $this->service = $service;
     }
 
     /**
@@ -24,7 +24,7 @@ class Controller extends BaseController
      */
     public function index()
     {
-        $posts = $this->repository->findAll();
+        $posts = $this->service->findAll([]);
 
         return response()->json($posts, '200');
     }
@@ -35,7 +35,7 @@ class Controller extends BaseController
     public function show($id)
     {
         try {
-            return $this->repository->show($id);
+            return $this->service->find($id);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
@@ -46,10 +46,10 @@ class Controller extends BaseController
      */
     public function add(Request $request)
     {
-        try {
-            $this->validate($request, $this->validator::$rules, $this->validator::$messages);
+        $this->validate($request, $this->validator::$rules, $this->validator::$messages);
 
-            $todo = $this->repository->add($request->toArray());
+        try {
+            $todo = $this->service->create($request->toArray());
 
             return response()->json($todo, 201);
         } catch (\Exception $e) {
@@ -62,10 +62,10 @@ class Controller extends BaseController
      */
     public function update($id, Request $request)
     {
-        try {
-            $this->validate($request, $this->validator::$rules, $this->validator::$messages);
-        
-            $todo = $this->repository->update((int)$id, $request->toArray());
+        $this->validate($request, $this->validator::$rules, $this->validator::$messages);
+
+        try {        
+            $todo = $this->service->update((int)$id, $request->toArray());
 
             return response()->json($todo, 200);
         } catch (\Exception $e) {
@@ -79,7 +79,7 @@ class Controller extends BaseController
     public function delete($id)
     {
         try {
-            $todo = $this->repository->delete((int)$id);
+            $todo = $this->service->delete((int)$id);
 
             return response()->json($todo, 200);
         } catch (\Exception $e) {

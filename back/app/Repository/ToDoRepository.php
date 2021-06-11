@@ -6,6 +6,9 @@ use App\Entities\ToDo;
 use App\Transformers\ToDoTransformer;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Repository for data
+ */
 class ToDoRepository
 {
     private $entityManager;
@@ -32,7 +35,7 @@ class ToDoRepository
     /**
      * Find one data
      */
-    public function show($id)
+    public function find($id)
     {
         try {
             $todo = $this->entityManager
